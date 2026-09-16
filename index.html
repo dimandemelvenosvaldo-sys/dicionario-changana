@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xichangana — Tradutor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-principal: #ffffff;
+            --bg-painel: #f8f9fa;
+            --bg-hover: #f1f3f4;
+            --texto-principal: #202124;
+            --texto-secundario: #5f6368;
+            --azul: #1a73e8;
+            --azul-claro: #e8f0fe;
+            --vermelho: #ea4335;
+            --amarelo: #fbbc04;
+            --verde: #34a853;
+            --borda: #dadce0;
+            --borda-clara: #e8eaed;
+
+            --fonte-titulo: 'Google Sans', 'Roboto', arial, sans-serif;
+            --fonte-corpo: 'Roboto', arial, sans-serif;
+        }
+
+        body.pb {
+            --bg-principal: #000000;
+            --bg-painel: #1a1a1a;
+            --bg-hover: #2a2a2a;
+            --texto-principal: #ffffff;
+            --texto-secundario: #b3b3b3;
+            --azul: #ffffff;
+            --azul-claro: #2a2a2a;
+            --vermelho: #ffffff;
+            --amarelo: #ffffff;
+            --verde: #ffffff;
+            --borda: #444444;
+            --borda-clara: #333333;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition-duration: 0.01ms !important; }
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-principal);
+            color: var(--texto-principal);
+            font-family: var(--fonte-corpo);
+            line-height: 1.5;
+        }
+
+        /* BARRA SUPERIOR ESTILO GOOGLE */
+        .topo {
+            border-bottom: 1px solid var(--borda-clara);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .topo-logo {
+            font-family: var(--fonte-titulo);
+            font-size: 1.35rem;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .topo-logo .icone {
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--azul), var(--verde));
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 0.85rem; font-weight: 700;
+        }
+        .topo-logo .nome-cinza { color: var(--texto-secundario); font-weight: 400; }
+
+        .btn-tema {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background-color: var(--bg-principal);
+            color: var(--texto-secundario);
+            border: 1px solid var(--borda);
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-family: var(--fonte-corpo);
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color .15s ease;
+        }
+        .btn-tema:hover { background-color: var(--bg-hover); }
+        .btn-tema .ponto {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--azul), var(--verde));
+        }
+        body.pb .btn-tema .ponto { background: #fff; }
+
+        .container { max-width: 720px; margin: 0 auto; padding: 24px 16px 40px; }
+
+        .sub-titulo { font-size: 0.9rem; color: var(--texto-secundario); text-align: center; margin-bottom: 24px; }
+
+        /* PAINEL DE IDIOMAS ESTILO GOOGLE TRANSLATE */
+        .painel-idiomas {
+            border: 1px solid var(--borda);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .barra-idiomas {
+            display: flex;
+            align-items: center;
+            background-color: var(--bg-principal);
+        }
+        .idioma-coluna {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+        .idioma-botao {
+            background: none;
+            border: none;
+            padding: 16px 20px;
+            font-family: var(--fonte-corpo);
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--texto-secundario);
+            cursor: default;
+            border-bottom: 3px solid transparent;
+            width: 100%;
+            text-align: center;
+        }
+        .idioma-botao.ativo { color: var(--azul); border-bottom-color: var(--azul); }
+        .btn-alternar-central {
+            background-color: var(--bg-principal);
+            border: none;
+            border-left: 1px solid var(--borda-clara);
+            border-right: 1px solid var(--borda-clara);
+            width: 48px; height: 48px;
+            flex-shrink: 0;
+            cursor: pointer;
+            color: var(--texto-secundario);
+            font-size: 1.1rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: background-color .15s ease, color .15s ease;
+        }
+        .btn-alternar-central:hover { background-color: var(--bg-hover); color: var(--azul); }
+
+        .busca-container { border-top: 1px solid var(--borda-clara); }
+        .input-busca {
+            width: 100%;
+            padding: 20px;
+            background-color: var(--bg-principal);
+            border: none;
+            color: var(--texto-principal);
+            font-size: 1.15rem;
+            font-family: var(--fonte-corpo);
+        }
+        .input-busca:focus { outline: none; }
+        .input-busca::placeholder { color: #9aa0a6; }
+
+        /* CATEGORIAS */
+        .categorias-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+        .btn-categoria {
+            background-color: var(--bg-principal);
+            color: var(--texto-secundario);
+            border: 1px solid var(--borda);
+            padding: 7px 16px;
+            font-family: var(--fonte-corpo);
+            font-size: 0.83rem;
+            font-weight: 500;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background-color .15s ease;
+        }
+        .btn-categoria:hover { background-color: var(--bg-hover); }
+        .btn-categoria.ativa { background-color: var(--azul-claro); color: var(--azul); border-color: var(--azul-claro); }
+
+        .contador-info { font-family: var(--fonte-corpo); font-size: 0.8rem; color: var(--texto-secundario); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+        .btn-exportar {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: var(--bg-principal);
+            color: var(--azul);
+            border: 1px solid var(--borda);
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-family: var(--fonte-corpo);
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color .15s ease;
+        }
+        .btn-exportar:hover { background-color: var(--azul-claro); }
+
+        /* RESULTADOS ESTILO CARTÃO DE DEFINIÇÃO DO GOOGLE TRANSLATE */
+        .grupo-letra { margin-bottom: 16px; }
+        .letria-cabecalho {
+            font-family: var(--fonte-titulo);
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--texto-secundario);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 14px 4px 8px;
+            display: block;
+        }
+        .lista-palavras { display: flex; flex-direction: column; gap: 8px; }
+        .cartao-palavra {
+            background-color: var(--bg-painel);
+            border-radius: 8px;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color .15s ease;
+        }
+        .cartao-palavra:hover { background-color: var(--bg-hover); }
+
+        .conteudo-traducao { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; flex-grow: 1; }
+        .palavra-origem { font-size: 1.05rem; font-weight: 500; color: var(--azul); }
+        .seta-direcao { color: #9aa0a6; font-size: 0.85rem; }
+        .palavra-destino { font-size: 1.05rem; color: var(--texto-principal); }
+        .tag-categoria {
+            font-family: var(--fonte-corpo);
+            font-size: 0.72rem;
+            background-color: var(--bg-principal);
+            border: 1px solid var(--borda-clara);
+            color: var(--texto-secundario);
+            padding: 3px 10px;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+
+        .estado-vazio { text-align: center; padding: 48px 20px; color: var(--texto-secundario); }
+        footer { margin-top: 36px; padding-top: 18px; border-top: 1px solid var(--borda-clara); font-size: 0.8rem; color: var(--texto-secundario); text-align: left; }
+        footer strong { color: var(--texto-principal); }
+
+        @media (max-width: 500px) {
+            .idioma-botao { padding: 14px 8px; font-size: 0.85rem; }
+            .cartao-palavra { flex-direction: column; align-items: flex-start; gap: 6px; }
+            .tag-categoria { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="topo">
+    <div class="topo-logo">
+        <span class="icone">X</span>
+        <span>Xichangana <span class="nome-cinza">Tradutor</span></span>
+    </div>
+    <button class="btn-tema" id="btnTema" onclick="alternarTema()">
+        <span class="ponto"></span>
+        <span id="temaLabel">Preto e branco</span>
+    </button>
+</div>
+
+<div class="container">
+    <p class="sub-titulo">Dicionário e tradutor · Sul de Moçambique</p>
+
+    <div class="painel-idiomas">
+        <div class="barra-idiomas">
+            <div class="idioma-coluna">
+                <button id="label-pt" class="idioma-botao ativo">Português</button>
+            </div>
+            <button id="btn-alternar-direcao" class="btn-alternar-central" onclick="alternarDirecao()" aria-label="Trocar direção">⇄</button>
+            <div class="idioma-coluna">
+                <button id="label-ch" class="idioma-botao">Xichangana</button>
+            </div>
+        </div>
+        <div class="busca-container">
+            <input type="text" id="input-busca" class="input-busca" placeholder="Digite uma palavra ou expressão..." oninput="filtrarDicionario()">
+        </div>
+    </div>
+
+    <div class="categorias-container" id="container-categorias"></div>
+    <div class="contador-info">
+        <span id="contador"></span>
+        <button class="btn-exportar" onclick="exportarPalavras()">⬇ Exportar palavras (Excel/CSV)</button>
+    </div>
+
+    <main id="dicionario-corpo"></main>
+
+    <footer>
+        <p><strong>Nota de transparência cultural:</strong> O Xichangana é uma língua viva com variações regionais marcantes (Maputo, Gaza). Esta base de dados está preparada para indexar milhares de vocábulos e frases estruturadas, funcionando offline e localmente.</p>
+    </footer>
+</div>
+
+<!-- Importação da base de dados externa -->
+<script src="dicionario.js"></script>
+<script>
+    function alternarTema() {
+        const isPB = !document.body.classList.contains('pb');
+        aplicarTema(isPB);
+        localStorage.setItem('tema-pb', isPB);
+    }
+
+    function aplicarTema(isPB) {
+        document.body.classList.toggle('pb', isPB);
+        document.getElementById('temaLabel').textContent = isPB ? 'Colorido' : 'Preto e branco';
+    }
+
+    aplicarTema(localStorage.getItem('tema-pb') === 'true');
+
+    let direcaoAtual = "pt-ch";
+    let categoriaSelecionada = "Todos";
+    const listaCategorias = ["Todos", "Saudações", "Pronomes", "Família", "Números", "Objetos", "Verbos", "Frases úteis"];
+
+    window.addEventListener("DOMContentLoaded", () => {
+        if (typeof baseDados === 'undefined') {
+            document.getElementById("dicionario-corpo").innerHTML = `<div class="estado-vazio">Erro crítico: O ficheiro 'dicionario.js' não foi detetado na mesma diretoria. Verifique o nome do arquivo.</div>`;
+            return;
+        }
+        renderizarCategorias();
+        renderizarDicionario();
+    });
+
+    function renderizarCategorias() {
+        const container = document.getElementById("container-categorias");
+        container.innerHTML = "";
+        listaCategorias.forEach(cat => {
+            const btn = document.createElement("button");
+            btn.className = `btn-categoria ${cat === categoriaSelecionada ? 'ativa' : ''}`;
+            btn.textContent = cat;
+            btn.setAttribute("onclick", `selecionarCategoria('${cat}')`);
+            container.appendChild(btn);
+        });
+    }
+
+    function selecionarCategoria(cat) {
+        categoriaSelecionada = cat;
+        renderizarCategorias();
+        filtrarDicionario();
+    }
+
+    function alternarDirecao() {
+        const labelPt = document.getElementById("label-pt");
+        const labelCh = document.getElementById("label-ch");
+        const inputBusca = document.getElementById("input-busca");
+
+        if (direcaoAtual === "pt-ch") {
+            direcaoAtual = "ch-pt";
+            labelPt.classList.remove("ativo");
+            labelCh.classList.add("ativo");
+            inputBusca.placeholder = "Digite uma palavra em Xichangana...";
+        } else {
+            direcaoAtual = "pt-ch";
+            labelCh.classList.remove("ativo");
+            labelPt.classList.add("ativo");
+            inputBusca.placeholder = "Digite uma palavra em Português...";
+        }
+        inputBusca.value = "";
+        renderizarDicionario();
+    }
+
+    function exportarPalavras() {
+        if (typeof baseDados === 'undefined' || baseDados.length === 0) {
+            alert("Não há palavras carregadas para exportar.");
+            return;
+        }
+
+        // Cabeçalho do CSV
+        let linhas = ["Português;Xichangana;Categoria"];
+
+        baseDados.forEach(item => {
+            const pt = (item.pt || "").replace(/;/g, ",");
+            const ch = (item.ch || "").replace(/;/g, ",");
+            const cat = (item.cat || "").replace(/;/g, ",");
+            linhas.push(`${pt};${ch};${cat}`);
+        });
+
+        // BOM no início para o Excel abrir acentos corretamente
+        const conteudoCSV = "\uFEFF" + linhas.join("\n");
+        const blob = new Blob([conteudoCSV], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        const dataAtual = new Date().toISOString().slice(0, 10);
+        link.download = `dicionario-xichangana-${dataAtual}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
+    function normalizarTexto(txt) {
+        return txt.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
+    function filtrarDicionario() {
+        renderizarDicionario();
+    }
+
+    function renderizarDicionario() {
+        const corpo = document.getElementById("dicionario-corpo");
+        const termoBusca = normalizarTexto(document.getElementById("input-busca").value);
+        corpo.innerHTML = "";
+
+        let dadosFiltrados = baseDados.filter(item => {
+            const correspondeCategoria = (categoriaSelecionada === "Todos" || item.cat === categoriaSelecionada);
+            const correspondeBusca = normalizarTexto(item.pt).includes(termoBusca) || normalizarTexto(item.ch).includes(termoBusca);
+            return correspondeCategoria && correspondeBusca;
+        });
+
+        document.getElementById("contador").textContent = `Registos encontrados: ${dadosFiltrados.length} de ${baseDados.length}`;
+
+        if (dadosFiltrados.length === 0) {
+            corpo.innerHTML = `<div class="estado-vazio">Nenhum termo ou frase corresponde aos critérios de pesquisa.</div>`;
+            return;
+        }
+
+        let itensProcessados = dadosFiltrados.map(item => {
+            return {
+                origem: direcaoAtual === "pt-ch" ? item.pt : item.ch,
+                destino: direcaoAtual === "pt-ch" ? item.ch : item.pt,
+                cat: item.cat
+            };
+        });
+
+        itensProcessados.sort((a, b) => a.origem.localeCompare(b.origem, 'pt', { sensitivity: 'base' }));
+
+        let dicionarioAgrupado = {};
+        itensProcessados.forEach(item => {
+            let primeiraLetra = normalizarTexto(item.origem.charAt(0)).toUpperCase();
+            if (!/^[A-Z]$/.test(primeiraLetra)) primeiraLetra = "#";
+            if (!dicionarioAgrupado[primeiraLetra]) dicionarioAgrupado[primeiraLetra] = [];
+            dicionarioAgrupado[primeiraLetra].push(item);
+        });
+
+        Object.keys(dicionarioAgrupado).sort().forEach(letra => {
+            const seccaoLetra = document.createElement("section");
+            seccaoLetra.className = "grupo-letra";
+
+            const cabecalho = document.createElement("span");
+            cabecalho.className = "letria-cabecalho";
+            cabecalho.textContent = letra;
+            seccaoLetra.appendChild(cabecalho);
+
+            const divLista = document.createElement("div");
+            divLista.className = "lista-palavras";
+
+            dicionarioAgrupado[letra].forEach(item => {
+                const cartao = document.createElement("div");
+                cartao.className = "cartao-palavra";
+                cartao.innerHTML = `
+                    <div class="conteudo-traducao">
+                        <span class="palavra-origem">${item.origem}</span>
+                        <span class="seta-direcao">→</span>
+                        <span class="palavra-destino">${item.destino}</span>
+                        <span class="tag-categoria">${item.cat}</span>
+                    </div>
+                `;
+                divLista.appendChild(cartao);
+            });
+            seccaoLetra.appendChild(divLista);
+            corpo.appendChild(seccaoLetra);
+        });
+    }
+</script>
+</body>
+</html>
