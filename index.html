@@ -1,471 +1,1446 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-MZ">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xichangana — Tradutor</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-principal: #ffffff;
-            --bg-painel: #f8f9fa;
-            --bg-hover: #f1f3f4;
-            --texto-principal: #202124;
-            --texto-secundario: #5f6368;
-            --azul: #1a73e8;
-            --azul-claro: #e8f0fe;
-            --vermelho: #ea4335;
-            --amarelo: #fbbc04;
-            --verde: #34a853;
-            --borda: #dadce0;
-            --borda-clara: #e8eaed;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f766e">
+<title>Tradutor Português ↔ Changana</title>
 
-            --fonte-titulo: 'Google Sans', 'Roboto', arial, sans-serif;
-            --fonte-corpo: 'Roboto', arial, sans-serif;
-        }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-        body.pb {
-            --bg-principal: #000000;
-            --bg-painel: #1a1a1a;
-            --bg-hover: #2a2a2a;
-            --texto-principal: #ffffff;
-            --texto-secundario: #b3b3b3;
-            --azul: #ffffff;
-            --azul-claro: #2a2a2a;
-            --vermelho: #ffffff;
-            --amarelo: #ffffff;
-            --verde: #ffffff;
-            --borda: #444444;
-            --borda-clara: #333333;
-        }
+:root{
+    --primary:#0f766e;
+    --primary2:#14b8a6;
+    --accent:#f59e0b;
+    --bg:#f4f7f8;
+    --card:#fff;
+    --card2:#f8fafc;
+    --text:#102a2a;
+    --muted:#64748b;
+    --border:#e2e8f0;
+    --shadow:0 20px 60px rgba(15,118,110,.12);
+}
 
-        @media (prefers-reduced-motion: reduce) {
-            * { transition-duration: 0.01ms !important; }
-        }
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background-color: var(--bg-principal);
-            color: var(--texto-principal);
-            font-family: var(--fonte-corpo);
-            line-height: 1.5;
-        }
+html{
+    scroll-behavior:smooth;
+}
 
-        /* BARRA SUPERIOR ESTILO GOOGLE */
-        .topo {
-            border-bottom: 1px solid var(--borda-clara);
-            padding: 14px 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .topo-logo {
-            font-family: var(--fonte-titulo);
-            font-size: 1.35rem;
-            font-weight: 400;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .topo-logo .icone {
-            width: 30px; height: 30px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--azul), var(--verde));
-            display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 0.85rem; font-weight: 700;
-        }
-        .topo-logo .nome-cinza { color: var(--texto-secundario); font-weight: 400; }
+body{
+    min-height:100vh;
+    font-family:Inter,Arial,sans-serif;
+    color:var(--text);
+    background:
+        radial-gradient(circle at 10% 0%,rgba(20,184,166,.15),transparent 28%),
+        radial-gradient(circle at 90% 10%,rgba(245,158,11,.12),transparent 25%),
+        var(--bg);
+}
 
-        .btn-tema {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background-color: var(--bg-principal);
-            color: var(--texto-secundario);
-            border: 1px solid var(--borda);
-            padding: 6px 14px;
-            border-radius: 16px;
-            font-family: var(--fonte-corpo);
-            font-size: 0.78rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color .15s ease;
-        }
-        .btn-tema:hover { background-color: var(--bg-hover); }
-        .btn-tema .ponto {
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--azul), var(--verde));
-        }
-        body.pb .btn-tema .ponto { background: #fff; }
+button,
+input,
+textarea,
+select{
+    font:inherit;
+}
 
-        .container { max-width: 720px; margin: 0 auto; padding: 24px 16px 40px; }
+button{
+    cursor:pointer;
+}
 
-        .sub-titulo { font-size: 0.9rem; color: var(--texto-secundario); text-align: center; margin-bottom: 24px; }
+.app{
+    width:min(1180px,calc(100% - 28px));
+    margin:auto;
+    padding:20px 0 50px;
+}
 
-        /* PAINEL DE IDIOMAS ESTILO GOOGLE TRANSLATE */
-        .painel-idiomas {
-            border: 1px solid var(--borda);
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-        .barra-idiomas {
-            display: flex;
-            align-items: center;
-            background-color: var(--bg-principal);
-        }
-        .idioma-coluna {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-        }
-        .idioma-botao {
-            background: none;
-            border: none;
-            padding: 16px 20px;
-            font-family: var(--fonte-corpo);
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: var(--texto-secundario);
-            cursor: default;
-            border-bottom: 3px solid transparent;
-            width: 100%;
-            text-align: center;
-        }
-        .idioma-botao.ativo { color: var(--azul); border-bottom-color: var(--azul); }
-        .btn-alternar-central {
-            background-color: var(--bg-principal);
-            border: none;
-            border-left: 1px solid var(--borda-clara);
-            border-right: 1px solid var(--borda-clara);
-            width: 48px; height: 48px;
-            flex-shrink: 0;
-            cursor: pointer;
-            color: var(--texto-secundario);
-            font-size: 1.1rem;
-            display: flex; align-items: center; justify-content: center;
-            transition: background-color .15s ease, color .15s ease;
-        }
-        .btn-alternar-central:hover { background-color: var(--bg-hover); color: var(--azul); }
+/* HEADER */
 
-        .busca-container { border-top: 1px solid var(--borda-clara); }
-        .input-busca {
-            width: 100%;
-            padding: 20px;
-            background-color: var(--bg-principal);
-            border: none;
-            color: var(--texto-principal);
-            font-size: 1.15rem;
-            font-family: var(--fonte-corpo);
-        }
-        .input-busca:focus { outline: none; }
-        .input-busca::placeholder { color: #9aa0a6; }
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 0 35px;
+}
 
-        /* CATEGORIAS */
-        .categorias-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-        .btn-categoria {
-            background-color: var(--bg-principal);
-            color: var(--texto-secundario);
-            border: 1px solid var(--borda);
-            padding: 7px 16px;
-            font-family: var(--fonte-corpo);
-            font-size: 0.83rem;
-            font-weight: 500;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: background-color .15s ease;
-        }
-        .btn-categoria:hover { background-color: var(--bg-hover); }
-        .btn-categoria.ativa { background-color: var(--azul-claro); color: var(--azul); border-color: var(--azul-claro); }
+.brand{
+    display:flex;
+    align-items:center;
+    gap:13px;
+}
 
-        .contador-info { font-family: var(--fonte-corpo); font-size: 0.8rem; color: var(--texto-secundario); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.logo{
+    width:50px;
+    height:50px;
+    display:grid;
+    place-items:center;
+    border-radius:16px;
+    color:white;
+    font-size:24px;
+    font-weight:800;
+    background:linear-gradient(135deg,var(--primary),var(--primary2));
+    box-shadow:0 12px 30px rgba(15,118,110,.25);
+}
 
-        .btn-exportar {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background-color: var(--bg-principal);
-            color: var(--azul);
-            border: 1px solid var(--borda);
-            padding: 6px 14px;
-            border-radius: 16px;
-            font-family: var(--fonte-corpo);
-            font-size: 0.78rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color .15s ease;
-        }
-        .btn-exportar:hover { background-color: var(--azul-claro); }
+.brand h1{
+    font-size:1.05rem;
+}
 
-        /* RESULTADOS ESTILO CARTÃO DE DEFINIÇÃO DO GOOGLE TRANSLATE */
-        .grupo-letra { margin-bottom: 16px; }
-        .letria-cabecalho {
-            font-family: var(--fonte-titulo);
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--texto-secundario);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 14px 4px 8px;
-            display: block;
-        }
-        .lista-palavras { display: flex; flex-direction: column; gap: 8px; }
-        .cartao-palavra {
-            background-color: var(--bg-painel);
-            border-radius: 8px;
-            padding: 14px 18px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background-color .15s ease;
-        }
-        .cartao-palavra:hover { background-color: var(--bg-hover); }
+.brand p{
+    color:var(--muted);
+    font-size:.75rem;
+    margin-top:4px;
+}
 
-        .conteudo-traducao { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; flex-grow: 1; }
-        .palavra-origem { font-size: 1.05rem; font-weight: 500; color: var(--azul); }
-        .seta-direcao { color: #9aa0a6; font-size: 0.85rem; }
-        .palavra-destino { font-size: 1.05rem; color: var(--texto-principal); }
-        .tag-categoria {
-            font-family: var(--fonte-corpo);
-            font-size: 0.72rem;
-            background-color: var(--bg-principal);
-            border: 1px solid var(--borda-clara);
-            color: var(--texto-secundario);
-            padding: 3px 10px;
-            border-radius: 10px;
-            margin-left: auto;
-        }
+.theme{
+    width:45px;
+    height:45px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:var(--card);
+    color:var(--text);
+    font-size:20px;
+}
 
-        .estado-vazio { text-align: center; padding: 48px 20px; color: var(--texto-secundario); }
-        footer { margin-top: 36px; padding-top: 18px; border-top: 1px solid var(--borda-clara); font-size: 0.8rem; color: var(--texto-secundario); text-align: left; }
-        footer strong { color: var(--texto-principal); }
+/* HERO */
 
-        @media (max-width: 500px) {
-            .idioma-botao { padding: 14px 8px; font-size: 0.85rem; }
-            .cartao-palavra { flex-direction: column; align-items: flex-start; gap: 6px; }
-            .tag-categoria { margin-left: 0; }
-        }
-    </style>
+.hero{
+    text-align:center;
+    max-width:760px;
+    margin:0 auto 30px;
+}
+
+.badge{
+    display:inline-flex;
+    padding:8px 14px;
+    border-radius:50px;
+    background:#ccfbf1;
+    color:var(--primary);
+    font-size:.75rem;
+    font-weight:700;
+    margin-bottom:15px;
+}
+
+.hero h2{
+    font-size:clamp(2.1rem,5vw,3.6rem);
+    line-height:1.05;
+    letter-spacing:-.05em;
+}
+
+.hero h2 span{
+    color:var(--primary);
+}
+
+.hero p{
+    color:var(--muted);
+    line-height:1.7;
+    max-width:650px;
+    margin:15px auto 0;
+}
+
+/* TRANSLATOR */
+
+.translator{
+    background:rgba(255,255,255,.9);
+    border:1px solid var(--border);
+    border-radius:25px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+}
+
+.languages{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:10px;
+    padding:10px;
+    background:var(--card2);
+    border-bottom:1px solid var(--border);
+}
+
+.language{
+    padding:14px;
+    text-align:center;
+    border-radius:14px;
+    font-weight:700;
+    color:var(--muted);
+}
+
+.language.active{
+    background:var(--card);
+    color:var(--primary);
+    box-shadow:0 5px 18px rgba(0,0,0,.06);
+}
+
+.swap{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    border:1px solid var(--border);
+    background:white;
+    color:var(--primary);
+    font-size:23px;
+    transition:.3s;
+}
+
+.swap:hover{
+    transform:rotate(180deg);
+}
+
+.translator-body{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+}
+
+.box{
+    min-width:0;
+}
+
+.box:first-child{
+    border-right:1px solid var(--border);
+}
+
+.box-title{
+    display:flex;
+    justify-content:space-between;
+    padding:18px 20px 0;
+    color:var(--muted);
+    font-size:.72rem;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+}
+
+textarea{
+    width:100%;
+    min-height:270px;
+    resize:none;
+    border:0;
+    outline:0;
+    background:transparent;
+    padding:18px 20px;
+    color:var(--text);
+    font-size:1rem;
+    line-height:1.7;
+}
+
+textarea::placeholder{
+    color:#94a3b8;
+}
+
+.result{
+    min-height:270px;
+    padding:18px 20px;
+    font-size:1rem;
+    line-height:1.7;
+    white-space:pre-wrap;
+    overflow:auto;
+}
+
+.empty{
+    color:#94a3b8;
+}
+
+.toolbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    padding:13px 16px;
+    border-top:1px solid var(--border);
+    background:var(--card2);
+}
+
+.actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+    padding:9px 13px;
+    border-radius:11px;
+    font-size:.78rem;
+    font-weight:600;
+    transition:.2s;
+}
+
+.btn:hover{
+    color:var(--primary);
+    border-color:#5eead4;
+    transform:translateY(-1px);
+}
+
+.counter{
+    color:var(--muted);
+    font-size:.75rem;
+}
+
+/* PESQUISA */
+
+.search-area{
+    display:grid;
+    grid-template-columns:1fr 230px;
+    gap:12px;
+    margin-top:18px;
+}
+
+.search{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:14px 16px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:15px;
+}
+
+.search input{
+    width:100%;
+    border:0;
+    outline:0;
+    background:transparent;
+    color:var(--text);
+}
+
+select{
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:0 14px;
+    background:var(--card);
+    color:var(--text);
+    outline:0;
+}
+
+/* SUGESTÕES */
+
+.suggestions{
+    display:none;
+    margin-top:15px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    overflow:hidden;
+}
+
+.suggestions-title{
+    padding:15px;
+    border-bottom:1px solid var(--border);
+    font-size:.8rem;
+    font-weight:800;
+}
+
+.suggestion{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    padding:14px 16px;
+    border-bottom:1px solid #f1f5f9;
+    transition:.2s;
+}
+
+.suggestion:hover{
+    background:var(--card2);
+}
+
+.suggestion:last-child{
+    border-bottom:0;
+}
+
+.pt{
+    font-weight:600;
+}
+
+.ch{
+    color:var(--primary);
+    font-weight:700;
+    text-align:right;
+}
+
+.cat{
+    display:block;
+    color:var(--muted);
+    font-size:.68rem;
+    margin-top:4px;
+}
+
+/* FEATURES */
+
+.features{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+    margin-top:18px;
+}
+
+.feature{
+    padding:20px;
+    background:rgba(255,255,255,.8);
+    border:1px solid var(--border);
+    border-radius:18px;
+}
+
+.feature-icon{
+    font-size:25px;
+}
+
+.feature h3{
+    font-size:.9rem;
+    margin-top:10px;
+}
+
+.feature p{
+    color:var(--muted);
+    font-size:.75rem;
+    line-height:1.6;
+    margin-top:6px;
+}
+
+/* FOOTER */
+
+footer{
+    text-align:center;
+    padding-top:30px;
+    color:var(--muted);
+    font-size:.75rem;
+}
+
+footer strong{
+    color:var(--primary);
+}
+
+/* DARK MODE */
+
+body.dark{
+    --bg:#071817;
+    --card:#0d2321;
+    --card2:#102a27;
+    --text:#e6fffb;
+    --muted:#91aaa6;
+    --border:#1e3d39;
+    --shadow:0 20px 60px rgba(0,0,0,.3);
+}
+
+body.dark .badge{
+    background:#123b36;
+    color:#5eead4;
+}
+
+body.dark .swap{
+    background:var(--card);
+}
+
+body.dark .suggestion:hover{
+    background:var(--card2);
+}
+
+/* RESPONSIVO */
+
+@media(max-width:800px){
+
+    .translator-body{
+        grid-template-columns:1fr;
+    }
+
+    .box:first-child{
+        border-right:0;
+        border-bottom:1px solid var(--border);
+    }
+
+    .features{
+        grid-template-columns:1fr;
+    }
+
+    .search-area{
+        grid-template-columns:1fr;
+    }
+
+    select{
+        height:48px;
+    }
+}
+
+@media(max-width:560px){
+
+    .app{
+        width:calc(100% - 18px);
+    }
+
+    .hero h2{
+        font-size:2.2rem;
+    }
+
+    .hero p{
+        font-size:.86rem;
+    }
+
+    .languages{
+        grid-template-columns:1fr auto 1fr;
+    }
+
+    .language{
+        font-size:.75rem;
+        padding:12px 5px;
+    }
+
+    .swap{
+        width:42px;
+        height:42px;
+    }
+
+    textarea,
+    .result{
+        min-height:220px;
+    }
+
+    .toolbar{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .counter{
+        align-self:flex-end;
+    }
+
+    .suggestion{
+        flex-direction:column;
+        gap:8px;
+    }
+
+    .ch{
+        text-align:left;
+    }
+}
+</style>
 </head>
+
 <body>
 
-<div class="topo">
-    <div class="topo-logo">
-        <span class="icone">X</span>
-        <span>Xichangana <span class="nome-cinza">Tradutor</span></span>
-    </div>
-    <button class="btn-tema" id="btnTema" onclick="alternarTema()">
-        <span class="ponto"></span>
-        <span id="temaLabel">Preto e branco</span>
-    </button>
-</div>
+<div class="app">
 
-<div class="container">
-    <p class="sub-titulo">Dicionário e tradutor · Sul de Moçambique</p>
+<header class="topbar">
 
-    <div class="painel-idiomas">
-        <div class="barra-idiomas">
-            <div class="idioma-coluna">
-                <button id="label-pt" class="idioma-botao ativo">Português</button>
-            </div>
-            <button id="btn-alternar-direcao" class="btn-alternar-central" onclick="alternarDirecao()" aria-label="Trocar direção">⇄</button>
-            <div class="idioma-coluna">
-                <button id="label-ch" class="idioma-botao">Xichangana</button>
-            </div>
-        </div>
-        <div class="busca-container">
-            <input type="text" id="input-busca" class="input-busca" placeholder="Digite uma palavra ou expressão..." oninput="filtrarDicionario()">
+    <div class="brand">
+        <div class="logo">C</div>
+
+        <div>
+            <h1>Crescer e Empreender</h1>
+            <p>Tradutor Português ↔ Changana</p>
         </div>
     </div>
 
-    <div class="categorias-container" id="container-categorias"></div>
-    <div class="contador-info">
-        <span id="contador"></span>
-        <button class="btn-exportar" onclick="exportarPalavras()">⬇ Exportar palavras (Excel/CSV)</button>
+    <button class="theme" id="themeBtn">☾</button>
+
+</header>
+
+
+<section class="hero">
+
+    <div class="badge">
+        🌍 Língua & Cultura Moçambicana
     </div>
 
-    <main id="dicionario-corpo"></main>
+    <h2>
+        Fale <span>Changana</span> com mais facilidade.
+    </h2>
 
-    <footer>
-        <p><strong>Nota de transparência cultural:</strong> O Xichangana é uma língua viva com variações regionais marcantes (Maputo, Gaza). Esta base de dados está preparada para indexar milhares de vocábulos e frases estruturadas, funcionando offline e localmente.</p>
-    </footer>
+    <p>
+        Pesquise palavras, expressões e frases do dia a dia.
+        Traduza rapidamente entre Português e Changana.
+    </p>
+
+</section>
+
+
+<main class="translator">
+
+    <div class="languages">
+
+        <div class="language active" id="inputLanguage">
+            🇵🇹 Português
+        </div>
+
+        <button class="swap" id="swapBtn">
+            ⇄
+        </button>
+
+        <div class="language active" id="outputLanguage">
+            🇲🇿 Changana
+        </div>
+
+    </div>
+
+
+    <div class="translator-body">
+
+        <section class="box">
+
+            <div class="box-title">
+                <span>Texto original</span>
+                <span id="status">Pronto</span>
+            </div>
+
+            <textarea
+                id="sourceText"
+                maxlength="1000"
+                placeholder="Digite uma palavra ou frase em Português..."
+            ></textarea>
+
+        </section>
+
+
+        <section class="box">
+
+            <div class="box-title">
+                <span>Tradução</span>
+                <span>Resultado</span>
+            </div>
+
+            <div
+                id="targetText"
+                class="result empty"
+            >
+                A tradução aparecerá aqui.
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <div class="toolbar">
+
+        <div class="actions">
+
+            <button class="btn" id="clearBtn">
+                ✕ Limpar
+            </button>
+
+            <button class="btn" id="copyBtn">
+                ⧉ Copiar
+            </button>
+
+            <button class="btn" id="speakBtn">
+                🔊 Ouvir
+            </button>
+
+        </div>
+
+        <div class="counter">
+            <span id="counter">0</span>/1000 caracteres
+        </div>
+
+    </div>
+
+</main>
+
+
+<div class="search-area">
+
+    <label class="search">
+        🔎
+
+        <input
+            type="search"
+            id="search"
+            placeholder="Pesquisar no dicionário..."
+        >
+    </label>
+
+    <select id="category">
+
+        <option value="all">
+            Todas as categorias
+        </option>
+
+        <option value="Saudações">
+            Saudações
+        </option>
+
+        <option value="Pronomes">
+            Pronomes
+        </option>
+
+        <option value="Família">
+            Família
+        </option>
+
+        <option value="Números">
+            Números
+        </option>
+
+        <option value="Verbos">
+            Verbos
+        </option>
+
+        <option value="Frases úteis">
+            Frases úteis
+        </option>
+
+        <option value="Objetos">
+            Objetos
+        </option>
+
+    </select>
+
 </div>
 
-<!-- Importação da base de dados externa -->
-<script src="dicionario.js"></script>
+
+<div class="suggestions" id="suggestions">
+
+    <div class="suggestions-title">
+        📚 Correspondências encontradas
+    </div>
+
+    <div id="suggestionsList"></div>
+
+</div>
+
+
+<section class="features">
+
+    <article class="feature">
+
+        <div class="feature-icon">⚡</div>
+
+        <h3>
+            Pesquisa rápida
+        </h3>
+
+        <p>
+            Encontre palavras e expressões rapidamente.
+        </p>
+
+    </article>
+
+
+    <article class="feature">
+
+        <div class="feature-icon">🔄</div>
+
+        <h3>
+            Dois sentidos
+        </h3>
+
+        <p>
+            Português → Changana ou Changana → Português.
+        </p>
+
+    </article>
+
+
+    <article class="feature">
+
+        <div class="feature-icon">📱</div>
+
+        <h3>
+            Responsivo
+        </h3>
+
+        <p>
+            Funciona em computador, tablet e telemóvel.
+        </p>
+
+    </article>
+
+</section>
+
+
+<footer>
+    Feito para valorizar a comunicação e a cultura de Moçambique ·
+    <strong>Crescer e Empreender</strong>
+</footer>
+
+</div>
+
+
 <script>
-    function alternarTema() {
-        const isPB = !document.body.classList.contains('pb');
-        aplicarTema(isPB);
-        localStorage.setItem('tema-pb', isPB);
+
+/* ==========================================
+   DICIONÁRIO PORTUGUÊS ↔ CHANGANA
+========================================== */
+
+const dicionario = [
+
+    /* SAUDAÇÕES */
+
+    {pt:"Bom dia / Olá",ch:"Avuxeni",cat:"Saudações"},
+    {pt:"Boa tarde / Boa noite",ch:"I nhlikanhi",cat:"Saudações"},
+    {pt:"Como estás?",ch:"U njani?",cat:"Saudações"},
+    {pt:"Estou bem",ch:"Ni pfukile",cat:"Saudações"},
+    {pt:"Tudo bem contigo?",ch:"Minani?",cat:"Saudações"},
+    {pt:"Fica bem / Adeus",ch:"Sala kahle",cat:"Saudações"},
+    {pt:"Vá com Deus / Adeus",ch:"Famba kahle",cat:"Saudações"},
+    {pt:"Como passaram a noite?",ch:"Mi pfukile njani?",cat:"Saudações"},
+    {pt:"Passámos bem a noite",ch:"Hi pfukile",cat:"Saudações"},
+    {pt:"Como passaram o dia?",ch:"Mi hlwile njani?",cat:"Saudações"},
+    {pt:"Passámos bem o dia",ch:"Hi hlwile",cat:"Saudações"},
+    {pt:"Entrem / Podem entrar",ch:"Nghenani",cat:"Saudações"},
+    {pt:"Sentem-se",ch:"Tshonani / Tshamani",cat:"Saudações"},
+    {pt:"Até logo",ch:"Hi ta vonana",cat:"Saudações"},
+    {pt:"Alô",ch:"Halo",cat:"Saudações"},
+
+    /* PRONOMES */
+
+    {pt:"Eu",ch:"Mina",cat:"Pronomes"},
+    {pt:"Tu",ch:"Wena",cat:"Pronomes"},
+    {pt:"Ele / Ela",ch:"Yena",cat:"Pronomes"},
+    {pt:"Nós",ch:"Hina",cat:"Pronomes"},
+    {pt:"Vós / Vocês",ch:"Wenani",cat:"Pronomes"},
+    {pt:"Eles / Elas",ch:"Vona",cat:"Pronomes"},
+    {pt:"Meu / Minha",ch:"Xanga / Wanga",cat:"Pronomes"},
+    {pt:"Teu / Tua",ch:"Wena",cat:"Pronomes"},
+    {pt:"Dele / Dela",ch:"Yena",cat:"Pronomes"},
+    {pt:"Nosso / Nossa",ch:"Xehu / Wehu",cat:"Pronomes"},
+    {pt:"Deles / Delas",ch:"Vona",cat:"Pronomes"},
+
+    /* FAMÍLIA */
+
+    {pt:"Mãe",ch:"Mamana",cat:"Família"},
+    {pt:"Pai",ch:"Tatana",cat:"Família"},
+    {pt:"Avó",ch:"Koko",cat:"Família"},
+    {pt:"Avô",ch:"Vhavha",cat:"Família"},
+    {pt:"Irmão / Irmã",ch:"Makweru",cat:"Família"},
+    {pt:"Filho / Criança",ch:"N'wana",cat:"Família"},
+    {pt:"Mulher / Esposa",ch:"Nsati",cat:"Família"},
+    {pt:"Homem / Marido",ch:"Nuna",cat:"Família"},
+    {pt:"Tio",ch:"Tatana ntsongo",cat:"Família"},
+    {pt:"Tio materno",ch:"Malume",cat:"Família"},
+    {pt:"Tia",ch:"Hahani",cat:"Família"},
+    {pt:"Neto / Neta",ch:"Ntukulu",cat:"Família"},
+    {pt:"Família / Parentes",ch:"Maxaka",cat:"Família"},
+    {pt:"Bebé",ch:"Xin'wanana",cat:"Família"},
+    {pt:"Gémeos",ch:"Mahahla",cat:"Família"},
+
+    /* NÚMEROS */
+
+    {pt:"Um",ch:"N'we",cat:"Números"},
+    {pt:"Dois",ch:"Mbirhi",cat:"Números"},
+    {pt:"Três",ch:"Rharhu",cat:"Números"},
+    {pt:"Quatro",ch:"Mune",cat:"Números"},
+    {pt:"Cinco",ch:"Ntlhanu",cat:"Números"},
+    {pt:"Seis",ch:"Tsea",cat:"Números"},
+    {pt:"Sete",ch:"Nkombo",cat:"Números"},
+    {pt:"Oito",ch:"Hlonga",cat:"Números"},
+    {pt:"Nove",ch:"Hume",cat:"Números"},
+    {pt:"Dez",ch:"Khume",cat:"Números"},
+    {pt:"Onze",ch:"Khume ni n'we",cat:"Números"},
+    {pt:"Doze",ch:"Khume ni mbirhi",cat:"Números"},
+    {pt:"Vinte",ch:"Makhume mambirhi",cat:"Números"},
+    {pt:"Trinta",ch:"Makhume marharhu",cat:"Números"},
+    {pt:"Cem",ch:"Dzana",cat:"Números"},
+
+    /* OBJETOS */
+
+    {pt:"Água",ch:"Mati",cat:"Objetos"},
+    {pt:"Casa",ch:"Yindlu",cat:"Objetos"},
+    {pt:"Pão",ch:"Pawa",cat:"Objetos"},
+    {pt:"Comida",ch:"Swakudya",cat:"Objetos"},
+    {pt:"Dinheiro",ch:"Mali",cat:"Objetos"},
+    {pt:"Livro",ch:"Buku",cat:"Objetos"},
+    {pt:"Carro",ch:"Moti / Movha",cat:"Objetos"},
+    {pt:"Roupa",ch:"Swayambalo / Mpahla",cat:"Objetos"},
+    {pt:"Cadeira",ch:"Xitulu",cat:"Objetos"},
+    {pt:"Mesa",ch:"Tafula",cat:"Objetos"},
+    {pt:"Cama",ch:"Mubhedi",cat:"Objetos"},
+    {pt:"Telefone",ch:"Riqingho",cat:"Objetos"},
+    {pt:"Chave",ch:"Khiye",cat:"Objetos"},
+    {pt:"Prato",ch:"Xibya",cat:"Objetos"},
+    {pt:"Panela",ch:"Banga / Imbita",cat:"Objetos"},
+    {pt:"Sol",ch:"Dambu",cat:"Objetos"},
+    {pt:"Lua / Mês",ch:"Hweti",cat:"Objetos"},
+    {pt:"Fogo",ch:"Ndilo",cat:"Objetos"},
+    {pt:"Porta",ch:"Nyangwa",cat:"Objetos"},
+    {pt:"Janela",ch:"Fasitere",cat:"Objetos"},
+
+    /* VERBOS */
+
+    {pt:"Gostar / Amar",ch:"Kurhandza",cat:"Verbos"},
+    {pt:"Ir / Caminhar",ch:"Kufamba",cat:"Verbos"},
+    {pt:"Comer",ch:"Kudya",cat:"Verbos"},
+    {pt:"Beber",ch:"Kunwa",cat:"Verbos"},
+    {pt:"Falar",ch:"Kuvulavula",cat:"Verbos"},
+    {pt:"Saber / Conhecer",ch:"Kutiva",cat:"Verbos"},
+    {pt:"Trabalhar",ch:"Kuthirha / Kubeleka",cat:"Verbos"},
+    {pt:"Vir",ch:"Kuta",cat:"Verbos"},
+    {pt:"Ver / Olhar",ch:"Kuvona",cat:"Verbos"},
+    {pt:"Dormir",ch:"Kuetlela",cat:"Verbos"},
+    {pt:"Comprar",ch:"Kuxava",cat:"Verbos"},
+    {pt:"Vender",ch:"Kuxavisa",cat:"Verbos"},
+    {pt:"Escrever",ch:"Kutsala",cat:"Verbos"},
+    {pt:"Ler",ch:"Kulenga / Kulerha",cat:"Verbos"},
+    {pt:"Chamar",ch:"Kuvitana",cat:"Verbos"},
+    {pt:"Correr",ch:"Kutsutsuma",cat:"Verbos"},
+    {pt:"Cantar",ch:"Kuyimbelela",cat:"Verbos"},
+    {pt:"Dançar",ch:"Kuxina",cat:"Verbos"},
+    {pt:"Rir",ch:"Kuhleka",cat:"Verbos"},
+    {pt:"Chorar",ch:"Kurila",cat:"Verbos"},
+    {pt:"Aprender",ch:"Dondzra / Kudondza",cat:"Verbos"},
+    {pt:"Ensinar",ch:"Dondzrisa",cat:"Verbos"},
+    {pt:"Entender",ch:"Twisisila / Kutwa",cat:"Verbos"},
+    {pt:"Viver",ch:"Kuhanya",cat:"Verbos"},
+    {pt:"Morrer",ch:"Kufa",cat:"Verbos"},
+    {pt:"Nascer",ch:"Kuvelekiwa",cat:"Verbos"},
+    {pt:"Agradecer",ch:"Kukhensame / Kukhensa",cat:"Verbos"},
+    {pt:"Pedir",ch:"Kukombela",cat:"Verbos"},
+    {pt:"Pagar",ch:"Kuhakalela / Kuhakala",cat:"Verbos"},
+    {pt:"Ajudar",ch:"Kupfuna",cat:"Verbos"},
+    {pt:"Poder / Conseguir",ch:"Kukota",cat:"Verbos"},
+    {pt:"Brincar / Jogar",ch:"Nutlhangana / Kutlhangana",cat:"Verbos"},
+    {pt:"Limpar",ch:"Kubasisa",cat:"Verbos"},
+    {pt:"Lavar",ch:"Kuhlantswa",cat:"Verbos"},
+    {pt:"Cozinhar",ch:"Kusweka",cat:"Verbos"},
+    {pt:"Fechar",ch:"Kupfala",cat:"Verbos"},
+    {pt:"Abrir",ch:"Kupfula",cat:"Verbos"},
+
+    /* FRASES */
+
+    {pt:"Muito obrigado",ch:"Inkomu swinene",cat:"Frases úteis"},
+    {pt:"Por favor",ch:"Ndza kombela",cat:"Frases úteis"},
+    {pt:"Desculpa",ch:"Ndza rivala",cat:"Frases úteis"},
+    {pt:"Quanto custa?",ch:"I mali muni?",cat:"Frases úteis"},
+    {pt:"Não tenho dinheiro",ch:"Andzi na mali",cat:"Frases úteis"},
+    {pt:"Qual é o teu nome?",ch:"Vito ra wena u mani?",cat:"Frases úteis"},
+    {pt:"Onde vais?",ch:"U ya kwihi?",cat:"Frases úteis"},
+    {pt:"Não entendo",ch:"Andzi twisisi",cat:"Frases úteis"},
+    {pt:"Não sei",ch:"Andzi tivi",cat:"Frases úteis"},
+    {pt:"Tenho fome",ch:"Ndzi ni ndlala",cat:"Frases úteis"},
+    {pt:"Tenho sede",ch:"Ndzi ni torha",cat:"Frases úteis"},
+    {pt:"Estou com pressa",ch:"Ndzi ni xihatla",cat:"Frases úteis"},
+    {pt:"Onde fica o mercado?",ch:"I kwihi bazara?",cat:"Frases úteis"},
+    {pt:"Gosto de ti",ch:"Na ku rhandzа",cat:"Frases úteis"},
+    {pt:"Estou cansado",ch:"Ndzi karhalile",cat:"Frases úteis"},
+    {pt:"Que horas são?",ch:"I nkarhi muni?",cat:"Frases úteis"},
+    {pt:"Podes ajudar-me?",ch:"U nga ndzi pfuna?",cat:"Frases úteis"},
+    {pt:"Bem-vindo",ch:"Amukelamoo / Hoyo-hoyo",cat:"Frases úteis"},
+    {pt:"Está calor",ch:"Kua hisa",cat:"Frases úteis"},
+    {pt:"Está frio",ch:"Kua titima",cat:"Frases úteis"},
+    {pt:"De onde vens?",ch:"U ta hi kwihi?",cat:"Frases úteis"},
+    {pt:"Onde está a escola?",ch:"I kwihi xikolo?",cat:"Frases úteis"},
+    {pt:"Onde está o hospital?",ch:"Xi kwihi xipetela?",cat:"Frases úteis"},
+    {pt:"Quero comprar pão",ch:"Ndzi lava kuxava pawa",cat:"Frases úteis"},
+    {pt:"Tens dinheiro?",ch:"U ni mali?",cat:"Frases úteis"},
+    {pt:"Preciso de um médico",ch:"Ndzi lava dotela / n'anga",cat:"Frases úteis"},
+    {pt:"Diz-me a verdade",ch:"Ndzi byele ntiyiso",cat:"Frases úteis"},
+    {pt:"Não digas mentiras",ch:"U nga vuli mavunwa",cat:"Frases úteis"},
+    {pt:"Quero beber água fria",ch:"Ndzi lava kunwa mati yo titima",cat:"Frases úteis"},
+    {pt:"Onde está o chefe?",ch:"U kwihi murhangeli?",cat:"Frases úteis"},
+
+    /* CORES */
+
+    {pt:"Preto",ch:"Ntima",cat:"Objetos"},
+    {pt:"Branco",ch:"Basa",cat:"Objetos"},
+    {pt:"Vermelho",ch:"Tshwuka",cat:"Objetos"},
+    {pt:"Verde",ch:"Rhadza / Rihaza",cat:"Objetos"},
+    {pt:"Azul",ch:"Wasi",cat:"Objetos"},
+    {pt:"Amarelo",ch:"Xilamula / Xitshopana",cat:"Objetos"},
+    {pt:"Castanho",ch:"Ribungzu",cat:"Objetos"},
+
+    /* ADJETIVOS */
+
+    {pt:"Grande",ch:"Kulu",cat:"Objetos"},
+    {pt:"Pequeno",ch:"Ntsongo",cat:"Objetos"},
+    {pt:"Bom / Bonito",ch:"Saseka",cat:"Objetos"},
+    {pt:"Mau / Feio",ch:"Biha",cat:"Objetos"},
+    {pt:"Novo",ch:"Ntshwa",cat:"Objetos"},
+    {pt:"Velho",ch:"Khale",cat:"Objetos"},
+    {pt:"Quente",ch:"Hisa",cat:"Objetos"},
+    {pt:"Frio",ch:"Titima",cat:"Objetos"},
+    {pt:"Cheio",ch:"Tala",cat:"Objetos"},
+    {pt:"Vazio",ch:"Phalala",cat:"Objetos"},
+    {pt:"Rico",ch:"Ganya / Ganyile",cat:"Objetos"},
+    {pt:"Pobre",ch:"Zula / Siniha",cat:"Objetos"},
+    {pt:"Forte",ch:"Tiyela",cat:"Objetos"},
+    {pt:"Fraco",ch:"Tsana / Goya",cat:"Objetos"},
+    {pt:"Longo / Comprido",ch:"Leha",cat:"Objetos"},
+    {pt:"Curto",ch:"Koma / Nkomo",cat:"Objetos"},
+    {pt:"Rápido",ch:"Hatla",cat:"Objetos"},
+    {pt:"Lento",ch:"Hlwela",cat:"Objetos"},
+    {pt:"Verdade",ch:"Ntiyiso",cat:"Objetos"},
+    {pt:"Mentira",ch:"Mavunwa",cat:"Objetos"},
+
+    /* LOCAIS */
+
+    {pt:"Cidade",ch:"Doropa / Dhoropa",cat:"Objetos"},
+    {pt:"Mercado / Loja",ch:"Bazara / Xitolo",cat:"Objetos"},
+    {pt:"Hospital",ch:"Xipetela / Xibedlele",cat:"Objetos"},
+    {pt:"Escola",ch:"Xikolo",cat:"Objetos"},
+    {pt:"Igreja",ch:"Kereke",cat:"Objetos"},
+    {pt:"Caminho / Estrada",ch:"Gondzo / Ndlela",cat:"Objetos"},
+    {pt:"Preço",ch:"Nxavo",cat:"Objetos"},
+    {pt:"Trabalho / Emprego",ch:"Nthirho",cat:"Objetos"},
+    {pt:"Polícia",ch:"Maporisa",cat:"Objetos"},
+    {pt:"Ladrão",ch:"Khamba",cat:"Objetos"},
+    {pt:"Amigo",ch:"Munghana",cat:"Objetos"},
+    {pt:"Vizinho",ch:"Muakelani",cat:"Objetos"}
+
+];
+
+
+/* ==========================================
+   ELEMENTOS
+========================================== */
+
+const sourceText = document.getElementById("sourceText");
+const targetText = document.getElementById("targetText");
+const counter = document.getElementById("counter");
+const status = document.getElementById("status");
+
+const inputLanguage = document.getElementById("inputLanguage");
+const outputLanguage = document.getElementById("outputLanguage");
+
+const swapBtn = document.getElementById("swapBtn");
+const clearBtn = document.getElementById("clearBtn");
+const copyBtn = document.getElementById("copyBtn");
+const speakBtn = document.getElementById("speakBtn");
+
+const search = document.getElementById("search");
+const category = document.getElementById("category");
+
+const suggestions = document.getElementById("suggestions");
+const suggestionsList = document.getElementById("suggestionsList");
+
+const themeBtn = document.getElementById("themeBtn");
+
+let invertido = false;
+
+
+/* ==========================================
+   NORMALIZAR TEXTO
+========================================== */
+
+function normalizar(texto){
+
+    return texto
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g,"")
+        .trim();
+
+}
+
+
+/* ==========================================
+   MOSTRAR RESULTADO
+========================================== */
+
+function mostrarResultado(texto,vazio=false){
+
+    targetText.textContent = texto;
+
+    if(vazio){
+        targetText.classList.add("empty");
+    }else{
+        targetText.classList.remove("empty");
     }
 
-    function aplicarTema(isPB) {
-        document.body.classList.toggle('pb', isPB);
-        document.getElementById('temaLabel').textContent = isPB ? 'Colorido' : 'Preto e branco';
+}
+
+
+/* ==========================================
+   TRADUZIR
+========================================== */
+
+function traduzir(){
+
+    const texto = sourceText.value.trim();
+
+    counter.textContent = sourceText.value.length;
+
+    if(!texto){
+
+        mostrarResultado(
+            "A tradução aparecerá aqui.",
+            true
+        );
+
+        status.textContent = "Pronto";
+
+        suggestions.style.display = "none";
+
+        return;
     }
 
-    aplicarTema(localStorage.getItem('tema-pb') === 'true');
 
-    let direcaoAtual = "pt-ch";
-    let categoriaSelecionada = "Todos";
-    const listaCategorias = ["Todos", "Saudações", "Pronomes", "Família", "Números", "Objetos", "Verbos", "Frases úteis"];
+    const busca = normalizar(texto);
 
-    window.addEventListener("DOMContentLoaded", () => {
-        if (typeof baseDados === 'undefined') {
-            document.getElementById("dicionario-corpo").innerHTML = `<div class="estado-vazio">Erro crítico: O ficheiro 'dicionario.js' não foi detetado na mesma diretoria. Verifique o nome do arquivo.</div>`;
-            return;
-        }
-        renderizarCategorias();
-        renderizarDicionario();
+    const origem = invertido ? "ch" : "pt";
+    const destino = invertido ? "pt" : "ch";
+
+
+    const resultado = dicionario.find(
+        item => normalizar(item[origem]) === busca
+    );
+
+
+    if(resultado){
+
+        mostrarResultado(resultado[destino]);
+
+        status.textContent = "Encontrado ✓";
+
+    }else{
+
+        mostrarResultado(
+            "Nenhuma tradução exata encontrada.",
+            true
+        );
+
+        status.textContent = "Pesquisa";
+
+    }
+
+
+    mostrarSugestoes(texto);
+
+}
+
+
+/* ==========================================
+   SUGESTÕES
+========================================== */
+
+function mostrarSugestoes(texto){
+
+    const busca = normalizar(texto);
+
+    const origem = invertido ? "ch" : "pt";
+    const destino = invertido ? "pt" : "ch";
+
+
+    const filtroCategoria = category.value;
+
+
+    let resultados = dicionario.filter(item => {
+
+        const correspondeTexto =
+            normalizar(item[origem]).includes(busca) ||
+            normalizar(item[destino]).includes(busca);
+
+        const correspondeCategoria =
+            filtroCategoria === "all" ||
+            item.cat === filtroCategoria;
+
+        return correspondeTexto && correspondeCategoria;
+
     });
 
-    function renderizarCategorias() {
-        const container = document.getElementById("container-categorias");
-        container.innerHTML = "";
-        listaCategorias.forEach(cat => {
-            const btn = document.createElement("button");
-            btn.className = `btn-categoria ${cat === categoriaSelecionada ? 'ativa' : ''}`;
-            btn.textContent = cat;
-            btn.setAttribute("onclick", `selecionarCategoria('${cat}')`);
-            container.appendChild(btn);
-        });
+
+    resultados = resultados.slice(0,20);
+
+
+    if(!resultados.length){
+
+        suggestions.style.display = "none";
+
+        return;
     }
 
-    function selecionarCategoria(cat) {
-        categoriaSelecionada = cat;
-        renderizarCategorias();
-        filtrarDicionario();
-    }
 
-    function alternarDirecao() {
-        const labelPt = document.getElementById("label-pt");
-        const labelCh = document.getElementById("label-ch");
-        const inputBusca = document.getElementById("input-busca");
+    suggestionsList.innerHTML = resultados.map(item => `
 
-        if (direcaoAtual === "pt-ch") {
-            direcaoAtual = "ch-pt";
-            labelPt.classList.remove("ativo");
-            labelCh.classList.add("ativo");
-            inputBusca.placeholder = "Digite uma palavra em Xichangana...";
-        } else {
-            direcaoAtual = "pt-ch";
-            labelCh.classList.remove("ativo");
-            labelPt.classList.add("ativo");
-            inputBusca.placeholder = "Digite uma palavra em Português...";
+        <div class="suggestion">
+
+            <div>
+
+                <div class="pt">
+                    ${item[origem]}
+                </div>
+
+                <span class="cat">
+                    ${item.cat}
+                </span>
+
+            </div>
+
+            <div class="ch">
+                ${item[destino]}
+            </div>
+
+        </div>
+
+    `).join("");
+
+
+    suggestions.style.display = "block";
+
+}
+
+
+/* ==========================================
+   DIGITAÇÃO
+========================================== */
+
+sourceText.addEventListener(
+    "input",
+    traduzir
+);
+
+
+/* ==========================================
+   FILTRO
+========================================== */
+
+category.addEventListener(
+    "change",
+    () => {
+
+        if(sourceText.value.trim()){
+
+            mostrarSugestoes(
+                sourceText.value
+            );
+
         }
-        inputBusca.value = "";
-        renderizarDicionario();
-    }
 
-    function exportarPalavras() {
-        if (typeof baseDados === 'undefined' || baseDados.length === 0) {
-            alert("Não há palavras carregadas para exportar.");
+    }
+);
+
+
+/* ==========================================
+   PESQUISA
+========================================== */
+
+search.addEventListener(
+    "input",
+    () => {
+
+        const valor = search.value.trim();
+
+        if(!valor){
+
+            suggestions.style.display = "none";
+
             return;
         }
 
-        // Cabeçalho do CSV
-        let linhas = ["Português;Xichangana;Categoria"];
 
-        baseDados.forEach(item => {
-            const pt = (item.pt || "").replace(/;/g, ",");
-            const ch = (item.ch || "").replace(/;/g, ",");
-            const cat = (item.cat || "").replace(/;/g, ",");
-            linhas.push(`${pt};${ch};${cat}`);
-        });
+        sourceText.value = valor;
 
-        // BOM no início para o Excel abrir acentos corretamente
-        const conteudoCSV = "\uFEFF" + linhas.join("\n");
-        const blob = new Blob([conteudoCSV], { type: "text/csv;charset=utf-8;" });
-        const url = URL.createObjectURL(blob);
+        traduzir();
 
-        const link = document.createElement("a");
-        link.href = url;
-        const dataAtual = new Date().toISOString().slice(0, 10);
-        link.download = `dicionario-xichangana-${dataAtual}.csv`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
+        sourceText.focus();
+
     }
+);
 
-    function normalizarTexto(txt) {
-        return txt.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    }
 
-    function filtrarDicionario() {
-        renderizarDicionario();
-    }
+/* ==========================================
+   TROCAR IDIOMAS
+========================================== */
 
-    function renderizarDicionario() {
-        const corpo = document.getElementById("dicionario-corpo");
-        const termoBusca = normalizarTexto(document.getElementById("input-busca").value);
-        corpo.innerHTML = "";
+swapBtn.addEventListener(
+    "click",
+    () => {
 
-        let dadosFiltrados = baseDados.filter(item => {
-            const correspondeCategoria = (categoriaSelecionada === "Todos" || item.cat === categoriaSelecionada);
-            const correspondeBusca = normalizarTexto(item.pt).includes(termoBusca) || normalizarTexto(item.ch).includes(termoBusca);
-            return correspondeCategoria && correspondeBusca;
-        });
+        invertido = !invertido;
 
-        document.getElementById("contador").textContent = `Registos encontrados: ${dadosFiltrados.length} de ${baseDados.length}`;
 
-        if (dadosFiltrados.length === 0) {
-            corpo.innerHTML = `<div class="estado-vazio">Nenhum termo ou frase corresponde aos critérios de pesquisa.</div>`;
-            return;
+        if(invertido){
+
+            inputLanguage.innerHTML =
+                "🇲🇿 Changana";
+
+            outputLanguage.innerHTML =
+                "🇵🇹 Português";
+
+            sourceText.placeholder =
+                "Escreva uma palavra ou frase em Changana...";
+
+        }else{
+
+            inputLanguage.innerHTML =
+                "🇵🇹 Português";
+
+            outputLanguage.innerHTML =
+                "🇲🇿 Changana";
+
+            sourceText.placeholder =
+                "Digite uma palavra ou frase em Português...";
+
         }
 
-        let itensProcessados = dadosFiltrados.map(item => {
-            return {
-                origem: direcaoAtual === "pt-ch" ? item.pt : item.ch,
-                destino: direcaoAtual === "pt-ch" ? item.ch : item.pt,
-                cat: item.cat
-            };
-        });
 
-        itensProcessados.sort((a, b) => a.origem.localeCompare(b.origem, 'pt', { sensitivity: 'base' }));
+        sourceText.value = "";
 
-        let dicionarioAgrupado = {};
-        itensProcessados.forEach(item => {
-            let primeiraLetra = normalizarTexto(item.origem.charAt(0)).toUpperCase();
-            if (!/^[A-Z]$/.test(primeiraLetra)) primeiraLetra = "#";
-            if (!dicionarioAgrupado[primeiraLetra]) dicionarioAgrupado[primeiraLetra] = [];
-            dicionarioAgrupado[primeiraLetra].push(item);
-        });
+        search.value = "";
 
-        Object.keys(dicionarioAgrupado).sort().forEach(letra => {
-            const seccaoLetra = document.createElement("section");
-            seccaoLetra.className = "grupo-letra";
+        mostrarResultado(
+            "A tradução aparecerá aqui.",
+            true
+        );
 
-            const cabecalho = document.createElement("span");
-            cabecalho.className = "letria-cabecalho";
-            cabecalho.textContent = letra;
-            seccaoLetra.appendChild(cabecalho);
+        counter.textContent = "0";
 
-            const divLista = document.createElement("div");
-            divLista.className = "lista-palavras";
+        status.textContent = "Pronto";
 
-            dicionarioAgrupado[letra].forEach(item => {
-                const cartao = document.createElement("div");
-                cartao.className = "cartao-palavra";
-                cartao.innerHTML = `
-                    <div class="conteudo-traducao">
-                        <span class="palavra-origem">${item.origem}</span>
-                        <span class="seta-direcao">→</span>
-                        <span class="palavra-destino">${item.destino}</span>
-                        <span class="tag-categoria">${item.cat}</span>
-                    </div>
-                `;
-                divLista.appendChild(cartao);
-            });
-            seccaoLetra.appendChild(divLista);
-            corpo.appendChild(seccaoLetra);
-        });
+        suggestions.style.display = "none";
+
+        sourceText.focus();
+
     }
+);
+
+
+/* ==========================================
+   LIMPAR
+========================================== */
+
+clearBtn.addEventListener(
+    "click",
+    () => {
+
+        sourceText.value = "";
+
+        search.value = "";
+
+        mostrarResultado(
+            "A tradução aparecerá aqui.",
+            true
+        );
+
+        counter.textContent = "0";
+
+        status.textContent = "Pronto";
+
+        suggestions.style.display = "none";
+
+        sourceText.focus();
+
+    }
+);
+
+
+/* ==========================================
+   COPIAR
+========================================== */
+
+copyBtn.addEventListener(
+    "click",
+    async () => {
+
+        if(targetText.classList.contains("empty")){
+
+            return;
+
+        }
+
+
+        try{
+
+            await navigator.clipboard.writeText(
+                targetText.textContent
+            );
+
+            copyBtn.textContent = "✓ Copiado!";
+
+            setTimeout(
+                () => {
+                    copyBtn.textContent = "⧉ Copiar";
+                },
+                1500
+            );
+
+        }catch(error){
+
+            alert(
+                "Não foi possível copiar automaticamente."
+            );
+
+        }
+
+    }
+);
+
+
+/* ==========================================
+   VOZ
+========================================== */
+
+speakBtn.addEventListener(
+    "click",
+    () => {
+
+        const texto = targetText.textContent;
+
+
+        if(
+            targetText.classList.contains("empty") ||
+            !("speechSynthesis" in window)
+        ){
+
+            return;
+
+        }
+
+
+        const voz =
+            new SpeechSynthesisUtterance(texto);
+
+
+        voz.lang =
+            invertido ? "pt-PT" : "pt-PT";
+
+
+        speechSynthesis.cancel();
+
+        speechSynthesis.speak(voz);
+
+    }
+);
+
+
+/* ==========================================
+   MODO ESCURO
+========================================== */
+
+themeBtn.addEventListener(
+    "click",
+    () => {
+
+        document.body.classList.toggle("dark");
+
+
+        const escuro =
+            document.body.classList.contains("dark");
+
+
+        themeBtn.textContent =
+            escuro ? "☀" : "☾";
+
+
+        localStorage.setItem(
+            "temaChangana",
+            escuro ? "dark" : "light"
+        );
+
+    }
+);
+
+
+/* ==========================================
+   CARREGAR TEMA
+========================================== */
+
+if(
+    localStorage.getItem("temaChangana") === "dark"
+){
+
+    document.body.classList.add("dark");
+
+    themeBtn.textContent = "☀";
+
+}
+
 </script>
+
 </body>
 </html>
